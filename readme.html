@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+    <title>Terms of Service Plugin Readme</title>
+    <style type="text/css">
+        BODY {
+            font-size : 100%;
+        }
+        BODY, TD, TH {
+            font-family : tahoma, verdana, arial, helvetica, sans-serif;
+            font-size : 0.8em;
+        }
+        H3 {
+            font-size : 10pt;
+            font-style: italic;
+            color: #004444;
+        }
+        H2 {
+            font-size : 10pt;
+            font-weight : bold;
+        }
+        A:hover {
+            text-decoration : none;
+        }
+        H1 {
+            font-family : tahoma, arial, helvetica, sans-serif;
+            font-size : 1.4em;
+            font-weight: bold;
+            border-bottom : 1px #ccc solid;
+            padding-bottom : 2px;
+        }
+
+        TT {
+            font-family : courier new;
+            font-weight : bold;
+            color : #060;
+        }
+        PRE {
+            font-family : courier new;
+            font-size : 100%;
+        }
+        #datatable TH {
+            color : #fff;
+            background-color : #2A448C;
+            text-align : left;
+        }
+        #datatable TD {
+            background-color : #FAF6EF;
+        }
+        #datatable .name {
+            background-color : #DCE2F5;
+        }
+    </style>
+</head>
+<body>
+
+<h1>
+    Terms of Service Plugin Readme
+</h1>
+
+<h2>Overview</h2>
+
+<p>
+    Requires users to explicitly accept the current terms of service before their authentication completes, and
+    serves the terms themselves publicly over HTTP, so a user (or their client) can read them without needing to
+    authenticate first.
+</p>
+
+<p>
+    The only enforcement mechanism this plugin currently ships is a SASL2 task, implementing the "SASL2 Terms of
+    Service Acceptance Task" specification (a ProtoXEP awaiting a XEP number at the time of writing). The plugin's
+    document repository and acceptance records are deliberately kept independent of that mechanism, so that a
+    future non-SASL2 way of obtaining acceptance can be added later without changing either.
+</p>
+
+<h2>Installation</h2>
+
+<p>
+    Copy termsofservice.jar into the plugins directory of your Openfire installation. The plugin will then be automatically
+    deployed. To upgrade to a new version, copy the new termsofservice.jar file over the existing file.
+</p>
+
+<p>
+    This plugin exposes a public web service, which will not work if the Web Binding service of Openfire is disabled.
+    It can be enabled on the Server &rarr; Server Settings &rarr; Web Binding page.
+</p>
+
+<h3>Getting started</h3>
+<ol>
+    <li>
+        Go to <b>Server &rarr; Server Settings &rarr; Terms of Service Texts</b> and create a draft: give it a
+        version identifier (e.g. <code>2026-06</code>) and write its text as Markdown.
+    </li>
+    <li>
+        Activate that draft. It becomes the current version, and can no longer be edited (start a new draft, or
+        copy it forward, for the next revision).
+    </li>
+    <li>
+        Go to <b>Server &rarr; Server Settings &rarr; Terms of Service</b>, confirm the announced URL looks right
+        for your deployment, and enable the requirement.
+    </li>
+</ol>
+
+<h3>The public endpoint</h3>
+<p>
+    The current version's text is served at the URL shown on the settings page (by default
+    <code>https://&lt;this server&gt;/termsofservice</code>), in whichever of HTML, Markdown, or plain text the
+    requester's <code>Accept</code> header prefers. If your server sits behind a reverse proxy, or is otherwise
+    reachable under a different address than Openfire itself is configured with, override the announced protocol,
+    host, port, or path on the settings page so that the URL handed to clients is one they can actually reach.
+</p>
+
+<h3>Reviewing and managing a user's acceptance</h3>
+<p>
+    Open any user's properties page and look for "Terms of Service" among the other per-user options (Profile
+    Information, Password, and so on). It shows every version that account has accepted, when, and how (through
+    the SASL2 task, or recorded manually by an administrator), and lets an administrator record an acceptance on
+    the user's behalf, for example because it was obtained outside of Openfire entirely.
+</p>
+
+<h3>Behaviour worth knowing about</h3>
+<ul>
+    <li>
+        Anonymous authentication is asked to accept on every connection, since there is no account to record
+        acceptance against.
+    </li>
+    <li>
+        If the server cannot durably persist an acceptance (for example a transient database failure),
+        authentication is still allowed to complete for that one session; the account is asked again on its
+        next connection.
+    </li>
+    <li>
+        A client that does not implement the SASL2 task cannot authenticate while the requirement applies to its
+        account. Per the base SASL2 specification (XEP-0388), it will still receive a human-readable explanation
+        before it has to abort.
+    </li>
+    <li>
+        Only clients speaking SASL2 (XEP-0388) are affected by the SASL2 task. If this server also permits the
+        legacy SASL profile of RFC 6120, or any other authentication path that bypasses SASL2, this requirement
+        is not enforced on that path; see the specification's Security Considerations.
+    </li>
+    <li>
+        An acceptance obtained some other way (a support interaction, a signed agreement) can be recorded by an
+        administrator on the user's behalf, and counts the same as one obtained through the SASL2 task.
+    </li>
+</ul>
+
+<h3>Extending this plugin</h3>
+<p>
+    How a user comes to accept the terms is deliberately decoupled from the fact that they did: any code with
+    access to <code>TosAcceptanceService</code> can record an acceptance, tagged with a mechanism label of its
+    choosing. The SASL2 task and the admin-console "record on behalf of" action are the two mechanisms this
+    plugin ships with, not the only two it supports — a web login flow or an email-confirmation link, for example,
+    could be added later as a further caller of the same service, with no change needed to this plugin's database
+    schema, its document repository, or the SASL2 task itself.
+</p>
+
+</body>
+</html>

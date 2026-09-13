@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+    <title>Terms of Service Plugin Changelog</title>
+    <style type="text/css">
+        BODY {
+            font-size : 100%;
+        }
+        BODY, TD, TH {
+            font-family : tahoma, verdana, arial, helvetica, sans-serif;
+            font-size : 0.8em;
+        }
+        H2 {
+            font-size : 10pt;
+            font-weight : bold;
+            padding-left : 1em;
+        }
+        A:hover {
+            text-decoration : none;
+        }
+        H1 {
+            font-family : tahoma, arial, helvetica, sans-serif;
+            font-size : 1.4em;
+            font-weight: bold;
+            border-bottom : 1px #ccc solid;
+            padding-bottom : 2px;
+        }
+        TT {
+            font-family : courier new;
+            font-weight : bold;
+            color : #060;
+        }
+        PRE {
+            font-family : courier new;
+            font-size : 100%;
+        }
+    </style>
+</head>
+<body>
+
+<h1>
+    Terms of Service Plugin Changelog
+</h1>
+
+<p><b>1.0.0</b> -- (to be determined)</p>
+<ul>
+    <li>Initial release. Extracted from an example previously developed as part of the Openfire core
+        (<code>org.jivesoftware.openfire.sasl.task.AcceptTermsTaskProvider</code>), updated to match the
+        "SASL2 Terms of Service Task" specification, and substantially extended:
+        <ul>
+            <li>
+                Acceptance and document text moved from a single user property into two proper database tables
+                (<code>ofTosAcceptance</code>, <code>ofTosDocument</code>), with install scripts for ten
+                database platforms (see readme.html for which are and aren't natively detected by Openfire
+                today).
+            </li>
+            <li>
+                A versioned repository of terms-of-service texts, with a draft/current/retired lifecycle, manageable
+                from a new admin console page.
+            </li>
+            <li>
+                A public, unauthenticated HTTP endpoint serving the current terms as HTML, Markdown, or plain
+                text, negotiated via the <code>Accept</code> header, with an admin-configurable announced
+                URL for reverse-proxied deployments.
+            </li>
+            <li>
+                A new per-user admin console page showing acceptance history and allowing an administrator to
+                record an acceptance on a user's behalf.
+            </li>
+            <li>
+                The plugin itself, and its package, class, database, and URL-path naming, generalized away from
+                "SASL2" to plain "terms of service" (<code>org.igniterealtime.openfire.plugin.termsofservice</code>): the
+                SASL2 task is this plugin's first enforcement mechanism, not an assumed-permanent one. The
+                acceptance-recording mechanism was generalized into a standalone service
+                (<code>TosAcceptanceService</code>) so that a future mechanism beyond the SASL2 task and the
+                admin console can be added without changing either.
+            </li>
+            <li>
+                Admin console labels and page text moved into a translatable resource bundle
+                (<code>termsofservice_i18n.properties</code>).
+            </li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>

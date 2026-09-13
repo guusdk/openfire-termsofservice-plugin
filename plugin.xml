@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+    <class>org.igniterealtime.openfire.plugin.termsofservice.TermsOfServicePlugin</class>
+
+    <name>${project.name}</name>
+    <description>${project.description}</description>
+    <author>${project.developers[0].name}</author>
+    <licenseType>apache</licenseType>
+    <version>${project.version}</version>
+    <date>2026-09-12</date>
+
+    <databaseKey>termsofservice</databaseKey>
+    <databaseVersion>0</databaseVersion>
+    <minServerVersion>5.2.0</minServerVersion>
+
+    <adminconsole>
+        <tab id="tab-server">
+            <sidebar id="sidebar-server-settings">
+                <item id="termsofservice-settings"
+                      name="${termsofservice.admin.item.settings.name}"
+                      url="termsofservice-settings.jsp"
+                      description="${termsofservice.admin.item.settings.description}"/>
+                <item id="termsofservice-documents"
+                      name="${termsofservice.admin.item.documents.name}"
+                      url="termsofservice-documents.jsp"
+                      description="${termsofservice.admin.item.documents.description}"/>
+            </sidebar>
+        </tab>
+
+        <tab id="tab-users">
+            <sidebar id="sidebar-users">
+                <item id="user-summary">
+                    <sidebar id="sidebar-users-options">
+
+                        <item id="termsofservice-user"
+                              name="${termsofservice.admin.item.user.name}"
+                              url="termsofservice-user.jsp"
+                              description="${termsofservice.admin.item.user.description}"/>
+
+                    </sidebar>
+                </item>
+            </sidebar>
+        </tab>
+    </adminconsole>
+</plugin>
